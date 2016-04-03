@@ -1,0 +1,30 @@
+language: python
+sudo: false
+cache: pip
+
+python:
+  - "3.3"
+  - "3.4"
+  - "3.5"
+
+before_install:
+  - pip install codecov
+
+install:
+  - pip install -r requirements.txt -r test-requirements.txt
+  - pip install -e .
+
+script:
+  - py.test --cov-fail-under 90
+  - flake8
+  - radon cc --average --show-closures concierge_jinja
+  - radon raw --summary concierge_jinja
+  - radon mi --show --multi concierge_jinja
+  - xenon -aA -mA -bB concierge_jinja
+
+after_success:
+  - codecov
+
+notifications:
+  email:
+    - nineseconds@yandex.ru
